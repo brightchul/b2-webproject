@@ -213,7 +213,7 @@
     plt.show()
     ```
     
-    ![Most Frequent 1st Place Queries by Country](frequent_first.png)
+    ![Most Frequent 1st Place Queries by Country](images/frequent_first.png)
 
     - 국가별 월별 일간 1등을 가장 많이 한 검색어
 
@@ -224,7 +224,7 @@
     merged_df.columns = ['US', 'UK', 'FR', 'NL', 'AUS']
     merged_df.T
     ```
-    ![month_queries](month_queries.png)
+    ![month_queries](images/month_queries.png)
 
 - 한 국가에서 월별 top 10에 가장 많이 올라온 검색어 5개 (미국)
 
@@ -242,4 +242,4 @@
     plt.show()
     ```
 
-    ![word cloud](top5_wordcloud.png)
+    ![word cloud](images/top5_wordcloud.png)
