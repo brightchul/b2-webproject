@@ -13,9 +13,20 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 import base64
-
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Set a separate domain for future opening
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Specify the directory containing CSV files
