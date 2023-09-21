@@ -1,7 +1,8 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { Overview } from "./(views)/OverView";
 import ModeView from "./(views)/ModeView";
+import { Overview } from "./(views)/OverView";
+import RankingKeywordView from "./(views)/RankingKeywordView";
 import WordCloud from "./(views)/WordCloud";
 
 export default function Home() {
@@ -114,6 +115,9 @@ export default function Home() {
               </p>
             </CardContent>
           </Card>
+        </div>
+        <div className="mt-5">
+          <RankingKeywordView />
         </div>
         <div className="mt-5">
           <div>
