@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import Any, Mapping
 from starlette.background import BackgroundTask
@@ -169,6 +170,7 @@ def get_country_data(country: str):
 def make_word_cloud_base64(country: str = None, n_ranks: int = None):
     # word cloud
     df_country = get_country_data(country)
+    print(df_country)
 
     columns = df_country["1"]
     for i in range(n_ranks):
@@ -240,6 +242,13 @@ async def get_head_json():
 async def get_mode_json():
     result_df = calculate_mode()
     return ResponseJson(content=result_df.to_json())
+
+
+@app.get("/api/keyword/location")
+async def get_keyword_location():
+    data = df["kw_location"].drop_duplicates()
+    list_data = json.loads(data.to_json(orient="records"))
+    return {"data": list_data}
 
 
 @app.get("/api/word-cloud")
