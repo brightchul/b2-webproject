@@ -2,6 +2,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import { Overview } from "./(views)/OverView";
 import ModeView from "./(views)/ModeView";
+import WordCloud from "./(views)/WordCloud";
 
 export default function Home() {
   return (
@@ -128,6 +129,7 @@ export default function Home() {
         </div>
       </div>
       <ModeView />
+      <WordCloud />
     </main>
   );
 }
