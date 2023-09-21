@@ -15,6 +15,7 @@ git clone https://github.com/wschung1113/b2-webproject.git
 # server 
 cd b2-webproject
 python -m venv .venv
+source .venv/bin/activate      # linux, mac 기준
 pip install -r requirement.txt
 uvicorn app:app --reload --port 8000
 
