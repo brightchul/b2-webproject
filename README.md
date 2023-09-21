@@ -31,15 +31,44 @@
   ```
 3. EDA
   - df.head()
-  ```python
-    @app.get("/head/", response_class=HTMLResponse)
-    async def get_head(n_rows: int=None):
-        if n_rows is None:
-            n_rows = 5
-        df_head = df.head(n_rows)
+    ```python
+        @app.get("/head/", response_class=HTMLResponse)
+        async def get_head(n_rows: int=None):
+            if n_rows is None:
+                n_rows = 5
+            df_head = df.head(n_rows)
+
+            # Convert the DataFrame to HTML
+            df_html = df_head.to_html(classes='table table-striped table-hover')
+
+            # Create an HTML template with the DataFrame embedded
+            html_content = f"""
+            <html>
+            <head>
+                <title>DataFrame Display</title>
+            </head>
+            <body>
+                <h1>DataFrame Display</h1>
+                {df_html}
+            </body>
+            </html>
+            """
+
+            return HTMLResponse(content=html_content)
+    ```
+    - query parameter로 head() 메소드가 보여줄 행의 수를 요청할 수 있음
+    - localhost:8000/head?n_rows=7
+    ![Image Alt Text](images/head.png)
+
+
+  - df.describe()
+    ```python
+    @app.get("/describe")
+    async def get_describe():
+        df_desc = df.describe(include='object')
 
         # Convert the DataFrame to HTML
-        df_html = df_head.to_html(classes='table table-striped table-hover')
+        df_html = df_desc.to_html(classes='table table-striped table-hover')
 
         # Create an HTML template with the DataFrame embedded
         html_content = f"""
@@ -55,7 +84,107 @@
         """
 
         return HTMLResponse(content=html_content)
-  ```
-  - query parameter로 head() 메소드가 보여줄 행의 수를 요청할 수 있음
-  - localhost:8000/head?n_rows=7
-  ![Image Alt Text](images/head.png)
+    ```
+    - localhost:8000/describe
+    ![Image Alt Text](images/describe.png)
+  
+
+  - 각 연월별 가장 많이 검색된 쿼리와 해당 쿼리가 가장 많이 검색된 국가
+    ```python
+    @app.get("/mode/")
+    async def get_mode():
+        # most frequent query by year and month
+        most_frequent = df.groupby(['year', 'month'])['1'].apply(lambda x: x.mode())
+
+        # Create a new DataFrame to present the results
+        result_df = most_frequent.reset_index()
+
+        countries_share = []
+        for i in range(len(result_df)):
+            year = result_df.loc[i, 'year']
+            month = result_df.loc[i,'month']
+            top_query = result_df.loc[i, '1']
+            countries_share.append(','.join(df[(df['year']==year) & (df['month']==month) & (df['1']==top_query)].kw_location.unique()))
+        result_df.loc[:, 'countries_share'] = countries_share
+
+        # Convert the DataFrame to HTML
+        df_html = result_df.iloc[:, [0, 1, 3, 4]].to_html(classes='table table-striped table-hover')
+
+        # Create an HTML template with the DataFrame embedded
+        html_content = f"""
+        <html>
+        <head>
+            <title>DataFrame Display</title>
+        </head>
+        <body>
+            <h1>DataFrame Display</h1>
+            {df_html}
+        </body>
+        </html>
+        """
+
+        return HTMLResponse(content=html_content)
+    ```
+    - localhost:8000/mode
+    ![Image Alt Text](images/mode.png)
+
+  - Top N Word Cloud
+    ```python
+    @app.get("/word-cloud/", response_class=HTMLResponse)
+    async def plot_wc(country: str=None, n_ranks: int=None):
+        
+        # word cloud
+        if country is None:
+            df_country = df.copy()
+        else:
+            df_country = df[df['kw_location'] == country]
+        columns = df_country['1']
+        for i in range(n_ranks):
+            df_country.iloc[:, 6+i] = df_country.iloc[:, 6+i].apply(lambda x: x.replace(' ', ''))
+            if i != 0:
+                columns += ' ' + df_country.iloc[:, 6+i]
+            
+        # Concatenate text from multiple columns into a single string
+        combined_text = ' '.join(columns)
+
+        # Create a WordCloud object
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(combined_text)
+
+        # Display the word cloud plot
+        plt.figure(figsize=(10, 5))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        plt.title('Word Cloud from Multiple Columns')
+        # plt.show()
+
+        # Save the plot as an image in memory
+        buffer = BytesIO()
+        plt.savefig(buffer, format="png")
+        buffer.seek(0)
+        
+        # Encode the image data as base64
+        image_base64 = base64.b64encode(buffer.read()).decode("utf-8")
+
+        # Return an HTML page with the image
+        html_content = f"""
+        <html>
+        <head>
+            <title>Matplotlib Plot on Web Page</title>
+        </head>
+        <body>
+            <h1>Matplotlib Plot</h1>
+            <img src="data:image/png;base64,{image_base64}" alt="Sample Plot">
+        </body>
+        </html>
+        """
+
+        return HTMLResponse(content=html_content)
+    ```
+    - 국가 미지정 시 모든 국가 대상으로 word cloud 생성
+    - 가능 입력 국가: US, UK, DE, FR, NL, AUS, IT
+    - n_ranks의 경우 Top n_ranks 쿼리들로 이루어진 word cloud 생성 (1 이상 입력)
+    - http://localhost:8080/word-cloud?country=US&n_ranks=5
+    - localhost:8000/word-cloud?country=US&n_ranks=5
+    ![Image Alt Text](images/wordcloud.png)
+
+
