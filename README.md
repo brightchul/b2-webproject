@@ -188,3 +188,58 @@
     ![Image Alt Text](images/wordcloud.png)
 
 
+
+- 국가별 검색 순위 1위를 가장 많이 한 검색어
+
+    ```python
+    # Extract countries and queries
+    countries = list(firsts.keys())
+    queries = [entry[0] for entry in firsts.values()]
+    counts = [entry[1] for entry in firsts.values()]
+
+    # Create a bar plot
+    plt.figure(figsize=(8, 6))
+    plt.bar(countries, counts, color='skyblue')
+    plt.xlabel('Countries')
+    plt.ylabel('Frequency')
+    plt.title('Most Frequent 1st Place Queries by Country')
+    plt.xticks(rotation=45)
+
+    # Annotate the queries on the plot
+    for i, count in enumerate(counts):
+        plt.text(countries[i], count + 0.1, f'{queries[i]} ({count})', ha='center', va='bottom')
+
+    plt.tight_layout()
+    plt.show()
+    ```
+    
+    ![Most Frequent 1st Place Queries by Country](frequent_first.png)
+
+    - 국가별 월별 일간 1등을 가장 많이 한 검색어
+
+    ```python
+    merged_df = pd.concat([us_top1, uk_top1, fr_top1, nl_top1, aus_top1], axis=1)
+    merged_df.set_index('year_month', inplace=True)
+    merged_df.index = ['2022-08','2022-09','2022-10','2023-01','2023-02','2023-03','2023-04','2023-05','2023-06','2023-07','2023-08']
+    merged_df.columns = ['US', 'UK', 'FR', 'NL', 'AUS']
+    merged_df.T
+    ```
+    ![month_queries](month_queries.png)
+
+- 한 국가에서 월별 top 10에 가장 많이 올라온 검색어 5개 (미국)
+
+    ```python
+    from wordcloud import WordCloud
+
+    top_keywords = [keyword for queries in top_5_queries.values() for keyword in queries]
+
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(' '.join(top_keywords))
+
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Top 5 Queries')
+    plt.show()
+    ```
+
+    ![word cloud](top5_wordcloud.png)
