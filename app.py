@@ -205,6 +205,23 @@ def make_word_cloud_base64(country: str = None, n_ranks: int = None):
     return image_base64
 
 
+def get_countries():
+    data = df["kw_location"].drop_duplicates()
+    countries = json.loads(data.to_json(orient="records"))
+    return countries
+
+
+def get_country_keyword_frequency_by_ranking(rank, countries):
+    rank = str(rank)
+    result = {}
+
+    for country in countries:
+        rank_common = df[df["kw_location"] == country][rank].value_counts()
+        result[country] = [rank_common.index[0], float(rank_common.iloc[0])]
+
+    return result
+
+
 @app.get("/word-cloud/", response_class=HTMLResponse)
 async def plot_wc(country: str = None, n_ranks: int = None):
     # Encode the image data as base64
@@ -246,12 +263,19 @@ async def get_mode_json():
 
 @app.get("/api/keyword/location")
 async def get_keyword_location():
-    data = df["kw_location"].drop_duplicates()
-    list_data = json.loads(data.to_json(orient="records"))
-    return {"data": list_data}
+    countries = get_countries()
+    return {"data": countries}
 
 
 @app.get("/api/word-cloud")
 async def plot_word_cloud(country: str = "", ranks: int = 5):
     image_base64 = make_word_cloud_base64(country, ranks)
     return {"data": image_base64}
+
+
+@app.get("/api/keyword/rank/{rank}")
+async def get_keyword_by_rank(rank: int):
+    countries = get_countries()
+    result = get_country_keyword_frequency_by_ranking(rank, countries)
+
+    return {"data": result}
