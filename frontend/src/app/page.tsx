@@ -14,8 +14,7 @@ export default function Home() {
             Top 20 most searched queries in Google
           </h1>
         </div>
-        <div className="flex flex-col gap-5">
-          <SimpleInfoView />
+        <div className="mt-10 flex flex-col gap-5">
           <RankingKeywordView />
           <ModeView />
           <WordCloud />
