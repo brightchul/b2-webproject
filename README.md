@@ -23,6 +23,8 @@
   npm install
   npm run dev
   ```
+![](./images/data-visualization-frontend.gif)
+
 
 ## 1. 데이터 소개
   - 출처: https://www.kaggle.com/datasets/lorentzyeung/top-20-most-searched-queries-in-google-search
