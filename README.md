@@ -1,15 +1,36 @@
 # [B반-b2조]데이터 시각화 웹 페이지 만들기
-0. 프로젝트 소개
+## 0. 프로젝트 소개
+
+### FastAPI 기반 EDA 시각화 서버
   - FastAPI 기반 EDA 시각화 서버
   - 구동 방법
   ```bash
+  git clone https://github.com/wschung1113/b2-webproject.git
+  cd b2-webproject
+  cd backend
+  python -m venv .venv
+  pip install -r requirements.txt
   uvicorn app:app --reload --port 8000
   ```
-1. 데이터 소개
+
+### Next.js 기반 EDA 시각화 프론트 엔드 
+  - 백엔드  API 서버가 먼저 실행되어 있어야 합니다. 
+  - 실행 방법
+  ```bach
+  git clone https://github.com/wschung1113/b2-webproject.git
+  cd b2-webproject
+  cd frontend
+  npm install
+  npm run dev
+  ```
+
+## 1. 데이터 소개
   - 출처: https://www.kaggle.com/datasets/lorentzyeung/top-20-most-searched-queries-in-google-search
   - 연/월별로 US, UK, Germany, France, Netherlands, Italy, Australia에서 가장 많이 검색된 Top 20 쿼리 데이터셋
   - 팀 내부적으로 22년 8월부터 23년 8월까지 총 1년간의 데이터를 사용하기로 결정
-2. 데이터 취합
+
+
+## 2. 데이터 취합
   - 각 .csv 파일을 순회하며 단일 DataFrame으로 취합
   ```python
     # Specify the directory containing CSV files
@@ -29,7 +50,7 @@
     # take out first two meaningless columns
     df = df.iloc[:, 2:]
   ```
-3. EDA
+## 3. EDA
   - df.head()
     ```python
         @app.get("/head/", response_class=HTMLResponse)
