@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 type JsonData = {
   "1": { [key: string]: string }; // '0': 'Coolio',
@@ -50,31 +51,40 @@ export default function ModeView() {
   );
 
   return (
-    <div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>keyword</TableHead>
-            <TableHead className="text-center">year</TableHead>
-            <TableHead className="text-center">month</TableHead>
-            <TableHead className="text-center">level2</TableHead>
-            <TableHead className="text-right">countries share</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {convertedData.map(
-            ({ keyword, year, month, level_2, countries_share }, idx) => (
-              <TableRow key={`${idx}-${keyword}`}>
-                <TableCell>{keyword}</TableCell>
-                <TableCell className="text-center">{year}</TableCell>
-                <TableCell className="text-center">{month}</TableCell>
-                <TableCell className="text-center">{level_2}</TableCell>
-                <TableCell className="text-right">{countries_share}</TableCell>
-              </TableRow>
-            )
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-md font-medium">
+          Most frequent query year/month
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="mt-5">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>keyword</TableHead>
+              <TableHead className="text-center">year</TableHead>
+              <TableHead className="text-center">month</TableHead>
+              <TableHead className="text-center">level2</TableHead>
+              <TableHead className="text-right">countries share</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {convertedData.map(
+              ({ keyword, year, month, level_2, countries_share }, idx) => (
+                <TableRow key={`${idx}-${keyword}`}>
+                  <TableCell>{keyword}</TableCell>
+                  <TableCell className="text-center">{year}</TableCell>
+                  <TableCell className="text-center">{month}</TableCell>
+                  <TableCell className="text-center">{level_2}</TableCell>
+                  <TableCell className="text-right">
+                    {countries_share}
+                  </TableCell>
+                </TableRow>
+              )
+            )}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
