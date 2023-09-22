@@ -13,9 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function WordCloud() {
-  const [selectedLocation, setSelectedLocation] = useState<
-    undefined | string
-  >();
+  const [selectedLocation, setSelectedLocation] = useState("US");
   const [keywordLocationList, setKeywordLocationList] = useState<string[]>([]);
   const [countryRanks, setCountryRanks] = useState(5);
   const [wordCloudBase64, setSetKeywordLocationList] = useState();
@@ -27,7 +25,8 @@ export default function WordCloud() {
   }, []);
 
   useEffect(() => {
-    if (!selectedLocation) return;
+    console.log(selectedLocation, countryRanks);
+    if (!selectedLocation && !countryRanks) return;
 
     const url = `http://127.0.0.1:8000/api/word-cloud?${
       selectedLocation ?? `country=${selectedLocation}&`
@@ -46,6 +45,7 @@ export default function WordCloud() {
       <CardContent className="mt-5">
         <div className="flex gap-3">
           <Select
+            defaultValue={selectedLocation}
             onValueChange={(value) => {
               setSelectedLocation(value);
             }}
@@ -64,6 +64,7 @@ export default function WordCloud() {
             </SelectContent>
           </Select>
           <Select
+            defaultValue={`${countryRanks}`}
             onValueChange={(value) => {
               setCountryRanks(parseInt(value, 10));
             }}
