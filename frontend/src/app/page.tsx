@@ -1,9 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import ModeView from "./(views)/ModeView";
 import RankingKeywordView from "./(views)/RankingKeywordView";
 import WordCloud from "./(views)/WordCloud";
-import SimpleInfoView from "./(views)/SimpleInfoView";
 
 export default function Home() {
   return (
