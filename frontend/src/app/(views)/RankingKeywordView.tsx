@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -20,41 +20,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import useRankData from "../hooks/useRankData";
+
 const rankNumberArr = Array.from({ length: 14 }, (_, idx) =>
   (idx + 1).toString()
 );
 
-type RawData = {
-  [country: string]: [keyword: string, frequency: number];
-};
-
-type RankData = {
-  country: string;
-  keyword: string;
-  frequency: number;
-}[];
-
-function convertRankData(data: RawData): RankData {
-  return Object.keys(data).map((country) => ({
-    country,
-    keyword: data[country][0],
-    frequency: data[country][1],
-  }));
-}
-
 export default function RankingKeywordView() {
   const [rankNumber, setRankNumber] = useState("1");
-  const [rankData, setRankData] = useState<RankData>();
-
-  useEffect(() => {
-    if (!rankNumber) return;
-
-    fetch(`http://127.0.0.1:8000/api/keyword/rank/${rankNumber}`)
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setRankData(convertRankData(data));
-      });
-  }, [rankNumber]);
+  const rankData = useRankData(rankNumber);
 
   return (
     <Card>
