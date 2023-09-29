@@ -1,7 +1,8 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -10,32 +11,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import useKeywordLocationList from "../hooks/useKeywordLocationList";
+import useWordCloudBase64 from "../hooks/useWordCloudBase64";
+
+const arrLength30 = Array.from({ length: 30 }, (_, i) => i + 1);
 
 export default function WordCloud() {
   const [selectedLocation, setSelectedLocation] = useState("US");
-  const [keywordLocationList, setKeywordLocationList] = useState<string[]>([]);
   const [countryRanks, setCountryRanks] = useState(5);
-  const [wordCloudBase64, setSetKeywordLocationList] = useState();
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/keyword/location")
-      .then((res) => res.json())
-      .then(({ data }) => setKeywordLocationList(data));
-  }, []);
-
-  useEffect(() => {
-    console.log(selectedLocation, countryRanks);
-    if (!selectedLocation && !countryRanks) return;
-
-    const url = `http://127.0.0.1:8000/api/word-cloud?${
-      selectedLocation ?? `country=${selectedLocation}&`
-    }rank=${countryRanks}`;
-
-    fetch(url)
-      .then((res) => res.json())
-      .then(({ data }) => setSetKeywordLocationList(data));
-  }, [selectedLocation, countryRanks]);
+  const keywordLocationList = useKeywordLocationList();
+  const wordCloudBase64 = useWordCloudBase64(selectedLocation, countryRanks);
 
   return (
     <Card>
@@ -46,9 +33,7 @@ export default function WordCloud() {
         <div className="flex gap-3">
           <Select
             defaultValue={selectedLocation}
-            onValueChange={(value) => {
-              setSelectedLocation(value);
-            }}
+            onValueChange={setSelectedLocation}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select location" />
@@ -74,7 +59,7 @@ export default function WordCloud() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {Array.from({ length: 30 }, (_, i) => i + 1).map((num) => (
+                {arrLength30.map((num) => (
                   <SelectItem key={num} value={`${num}`}>
                     {num}
                   </SelectItem>
@@ -86,7 +71,7 @@ export default function WordCloud() {
 
         <div className="min-h-[280px] mt-5 flex justify-center">
           {wordCloudBase64 && (
-            <img src={`data:image/jpeg;base64,${wordCloudBase64}` ?? ""} />
+            <img src={`data:image/jpeg;base64,${wordCloudBase64}`} />
           )}
         </div>
       </CardContent>
