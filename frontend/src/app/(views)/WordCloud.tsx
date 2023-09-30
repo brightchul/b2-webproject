@@ -24,8 +24,6 @@ export default function WordCloud() {
   const { data } = useKeywordLocationList();
   const keywordLocationList = data?.data;
 
-  console.log(keywordLocationList);
-
   const wordCloudBase64 = useWordCloudBase64(selectedLocation, countryRanks);
 
   return (

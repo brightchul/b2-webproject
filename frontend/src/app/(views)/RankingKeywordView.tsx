@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import useRankData from "../hooks/useRankData";
+import useRankData from "../queries/useRankData";
 
 const rankNumberArr = Array.from({ length: 14 }, (_, idx) =>
   (idx + 1).toString()
@@ -28,7 +28,7 @@ const rankNumberArr = Array.from({ length: 14 }, (_, idx) =>
 
 export default function RankingKeywordView() {
   const [rankNumber, setRankNumber] = useState("1");
-  const rankData = useRankData(rankNumber);
+  const { data: rankData } = useRankData(rankNumber);
 
   return (
     <Card>
