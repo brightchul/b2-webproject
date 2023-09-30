@@ -12,8 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import useKeywordLocationList from "../hooks/useKeywordLocationList";
 import useWordCloudBase64 from "../hooks/useWordCloudBase64";
+import useKeywordLocationList from "../queries/useKeywordLocationList";
 
 const arrLength30 = Array.from({ length: 30 }, (_, i) => i + 1);
 
@@ -21,7 +21,11 @@ export default function WordCloud() {
   const [selectedLocation, setSelectedLocation] = useState("US");
   const [countryRanks, setCountryRanks] = useState(5);
 
-  const keywordLocationList = useKeywordLocationList();
+  const { data } = useKeywordLocationList();
+  const keywordLocationList = data?.data;
+
+  console.log(keywordLocationList);
+
   const wordCloudBase64 = useWordCloudBase64(selectedLocation, countryRanks);
 
   return (
@@ -40,11 +44,12 @@ export default function WordCloud() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {keywordLocationList.map((location) => (
-                  <SelectItem key={location} value={location}>
-                    {location}
-                  </SelectItem>
-                ))}
+                {keywordLocationList &&
+                  keywordLocationList.map((location) => (
+                    <SelectItem key={location} value={location}>
+                      {location}
+                    </SelectItem>
+                  ))}
               </SelectGroup>
             </SelectContent>
           </Select>
