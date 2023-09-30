@@ -12,8 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import useWordCloudBase64 from "../hooks/useWordCloudBase64";
 import useKeywordLocationList from "../queries/useKeywordLocationList";
+import useWordCloudBase64 from "../queries/useWordCloudBase64";
 
 const arrLength30 = Array.from({ length: 30 }, (_, i) => i + 1);
 
@@ -24,7 +24,10 @@ export default function WordCloud() {
   const { data } = useKeywordLocationList();
   const keywordLocationList = data?.data;
 
-  const wordCloudBase64 = useWordCloudBase64(selectedLocation, countryRanks);
+  const { data: wordCloudData } = useWordCloudBase64(
+    selectedLocation,
+    countryRanks
+  );
 
   return (
     <Card>
@@ -73,8 +76,8 @@ export default function WordCloud() {
         </div>
 
         <div className="min-h-[280px] mt-5 flex justify-center">
-          {wordCloudBase64 && (
-            <img src={`data:image/jpeg;base64,${wordCloudBase64}`} />
+          {wordCloudData && (
+            <img src={`data:image/jpeg;base64,${wordCloudData.data}`} />
           )}
         </div>
       </CardContent>
